@@ -1,4 +1,5 @@
-import { _decorator, Component, instantiate, math, Node, Prefab } from 'cc';
+import { _decorator, Component, Game, instantiate, math, Node, Prefab } from 'cc';
+import { GameManager, GameState } from './GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('PipeSpawn')
@@ -18,20 +19,28 @@ export class PipeSpawn extends Component {
     }
 
     update(deltaTime: number) {
+        if(GameManager.instance().getGameState() !== GameState.PLAYING) {
+            return;
+        }
+        console.log("当前时间", deltaTime);
+
         this.spawnTimer += deltaTime;
+        console.log("计时器时间", this.spawnTimer);
         // 达到生成间隔，生成新的管道
         if (this.spawnTimer >= this.spawnRand) {
             this.spawnTimer = 0;
             const newPipe = instantiate(this.pipePrefab);
             this.node.addChild(newPipe);
             // 设置管道的垂直位置为随机值
-            let p = this.node.getWorldPosition();
+            let p = newPipe.getWorldPosition();
+            console.log('当前世界坐标:', p);
             newPipe.setWorldPosition(p);
 
             let PLocal = newPipe.getPosition();
-            console.log('Spawn Pipe Local:', PLocal);
+            console.log('当前本地坐标:', PLocal);
             const randY = math.randomRangeInt(-150, 300); // 随机范围[-150, 300]
             newPipe.setPosition(PLocal.x, PLocal.y + randY);
+            console.log('新的管道坐标:', newPipe.getPosition());
 
         }
     }

@@ -1,5 +1,5 @@
 import { _decorator, Component, Node } from 'cc';
-import { GameManager } from './GameManager';
+import { GameManager, GameState } from './GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Pipe')
@@ -14,7 +14,13 @@ export class Pipe extends Component {
     }
 
     update(deltaTime: number) {
+        if(GameManager.instance().getGameState() !== GameState.PLAYING) {
+            return;
+        }
         this.node.setPosition(this.node.position.x - this.moveSpeed * deltaTime, this.node.position.y);
+        if(this.node.position.x < -900) {
+            this.node.destroy();
+        }
     }
 }
 

@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, UITransform } from 'cc';
-import { GameManager } from './GameManager';
+import { GameManager, GameState } from './GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('MoveElement')
@@ -25,7 +25,9 @@ export class MoveElement extends Component {
     }
 
     update(deltaTime: number) {
-        
+        if(GameManager.instance().getGameState() !== GameState.PLAYING) {
+            return;
+        }
         if (this.targetNode1 && this.targetNode2) {
             // 设置移动方向和距离
             const moveDistance = this.moveSpeed * deltaTime;
